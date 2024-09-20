@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page with Animation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Styling Umum */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            scroll-behavior: smooth; /* Smooth scroll behavior */
+        }
+
+        header {
+            background-color: #063540;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            transition: background-color 0.3s ease; /* Smooth background color transition */
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif; /* Heading font */
+            font-size: 2.5rem; /* Size heading yang lebih besar */
+        }
+
+        /* Navbar styling */
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #193b48;
+            padding: 10px;
+            position: sticky; /* Menempel saat scrolling */
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.1rem; /* Size font yang lebih besar untuk link */
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover transition */
+        }
+
+        nav ul li a:hover {
+            background-color: #021e20;
+            transform: scale(1.1); /* Animasi zoom saat hover link */
+        }
+
+        section {
+            padding: 20px;
+            margin: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease; /* Animasi masuk bagian */
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0); /* Animasi masuk saat terlihat */
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif; /* Heading font */
+            border-bottom: 2px solid #082e38;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin: 10px 0;
+            font-size: 1rem; /* Size font yang lebih besar untuk paragraf */
+        }
+
+        /* Profile Section */
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .profile-picture {
+            margin-bottom: 20px;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease; /* Animasi hover pada gambar profil */
+        }
+
+        .profile-img:hover {
+            transform: scale(1.1); /* Animasi zoom saat hover gambar profil */
+        }
+
+        .profile-info {
+            text-align: center;
+        }
+
+        .description {
+            margin-top: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Organization Section */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.3s ease; /* Transition for logo hover effect */
+        }
+
+        .logo:hover {
+            transform: scale(1.1); /* Animasi zoom saat hover logo */
+        }
+
+        /* Styling Pop-up */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2001; /* Pastikan berada di depan overlay */
+        }
+
+        .popup.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .popup h2 {
+            margin-bottom: 15px;
+        }
+
+        .popup button {
+            padding: 10px 20px;
+            background-color: #02322e;
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .popup button:hover {
+            background-color: #0c786a;
+            transform: scale(1.05); /* Animasi hover pada tombol */
+        }
+
+        /* Overlay styling */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Warna gelap transparan */
+            z-index: 2000; /* Z-index untuk memastikan di belakang popup */
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* Responsive for mobile */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+
+            .logo-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .profile-img {
+                width: 100px;
+                height: 100px;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .profile-img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .profile-info p {
+                font-size: 0.85rem;
+            }
+
+            .logo-container {
+                gap: 10px;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Bagian Header -->
+    <header>
+        <div class="header-container">
+            <h1>Hi Everyone!</h1>
+        </div>
+    </header>
+
+    <!-- Navbar -->
+    <nav>
+        <ul>
+            <li><a href="#profile">Profile</a></li>
+            <li><a href="#biodata">Biodata</a></li>
+            <li><a href="#education">Educational Background</a></li>
+            <li><a href="#organization">Organizational Background</a></li>
+        </ul>
+    </nav>
+
+    <!-- Bagian Profil -->
+    <section class="profile" id="profile">
+        <div class="profile-picture">
+            <img src="profile.jpg" alt="Profile Picture" class="profile-img">
+        </div>
+        <div class="profile-info">
+            <h2>Profile</h2>
+            <p class="description">
+                I am a student of the Informatics Engineering study program at Muhammadiyah University of Surakarta, who is interested in programming and technology and has an interest in becoming a web developer, I am also interested in editing fields such as graphic design, photography, and videography.   
+            </p>
+        </div>
+    </section>
+
+    <!-- Biodata -->
+    <section id="biodata">
+        <h2>Biodata</h2>
+        <p>Name: MUHAMMAD RISQI ARTAKA</p>
+        <p>Place, Date of Birth: Pekalongan, 19 March 2005</p>
+        <p>Address: Pekalongan Regency, Indonesia</p>
+        <p>Email: rizkyartaka@gmail.com</p>
+        <p>Instagram: @risqiartakaa</p>
+    </section>
+
+    <!-- Educational Background -->
+    <section id="education">
+        <h2>Educational Background</h2>
+        <p>Informatics Engineering Study Program - Muhammadiyah University of Surakarta (2023 - Now)</p>
+        <p>Muhammadiyah 1 Senior High School Pekalongan - Pekalongan Regency (2020 - 2023)</p>
+        <p>Kedungwuni 1 Junior High School - Pekalongan Regency (2017 - 2020)</p>
+    </section>
+
+    <!-- Organizational Background -->
+    <section id="organization">
+        <h2>Organizational Background</h2>
+        <div class="logo-container">
+            <img src="logo1.png" alt="Organization 1 Logo" class="logo" onclick="showPopup('popup1')">
+            <img src="logo2.png" alt="Organization 2 Logo" class="logo" onclick="showPopup('popup2')">
+        </div>
+    </section>
+
+    <!-- Popup untuk organisasi -->
+    <div class="popup" id="popup1">
+        <h2>HIMATIF UMS</h2>
+        <p>HIMATIF UMS is a student organization that houses informatics engineering students, and I myself work in the field of cadre formation in charge of managing human resources.</p>
+        <button onclick="closePopup('popup1')">Close</button>
+    </div>
+
+    <div class="popup" id="popup2">
+        <h2>FOSTI UMS</h2>
+        <p>FOSTI UMS is a student activity unit that operates in the open source field and I am a member of the public relations division which has the task of communicating and connecting with the outside world.</p>
+        <button onclick="closePopup('popup2')">Close</button>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        // Scroll animation
+        document.addEventListener("scroll", function() {
+            var sections = document.querySelectorAll("section");
+            var scrollPosition = window.pageYOffset;
+
+            sections.forEach(function(section) {
+                if (scrollPosition >= section.offsetTop - window.innerHeight / 1.2) {
+                    section.classList.add("visible");
+                }
+            });
+        });
+
+        // Popup dan Overlay
+        function showPopup(popupId) {
+            document.getElementById(popupId).classList.add("show");
+            document.getElementById("overlay").classList.add("show");
+        }
+
+        function closePopup(popupId) {
+            document.getElementById(popupId).classList.remove("show");
+            document.getElementById("overlay").classList.remove("show");
+        }
+    </script>
+</body>
+</html>
